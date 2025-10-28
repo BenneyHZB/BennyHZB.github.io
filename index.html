@@ -138,13 +138,13 @@
       <!-- 首页链接 -->
       <a href="/">首页</a>
       <!-- 招聘页面链接 - 修改此处的href来更改招聘页面地址 -->
-      <a href="baidu.com" class="mr40" target="_blank">招聘</a>
+      <a href="https://www.zhipin.com/companys/08de2fe2f0cdd9a70nZ-3Ny0FFE~.html" class="mr40" target="_blank">招聘</a>
       <!-- 微信二维码/公众号链接 - 修改此处的href来添加微信链接 -->
       <a href=""><img src="images/wx.png" alt="微信" /></a>
       <!-- B站链接 - 修改此处的href来添加B站链接 -->
       <a href="https://space.bilibili.com/3546977128155332?spm_id_from=333.33.0.0"><img src="images/b.png" alt="B站" /></a>
       <!-- 微博链接 - 修改此处的href来添加微博链接 -->
-      <a href=""><img src="images/wb.png" alt="微博" /></a>
+      <a href="https://weibo.com/u/4065468154"><img src="images/wb.png" alt="微博" /></a>
       <!-- 抖音链接 - 修改此处的href来添加抖音链接 -->
       <a href=""><img src="images/dy.png" alt="抖音" /></a>
     </div>
@@ -158,10 +158,19 @@
         </div>
         <!-- 全屏按钮 -->
         <div class="fullscreen-btn" id="fullscreenBtn" title="全屏播放"></div>
-        <!-- 视频元素 - 修改src属性来更改视频文件，添加autoplay和loop属性实现自动播放和循环 -->
-        <video id="myVedio" width="100%" muted autoplay loop>
-          <source src="images/1.mp4" type="video/mp4" />
-        </video>
+        <!-- 外部平台视频：使用 B站播放器 iframe 嵌入（注意：<video> 不能播放网页地址） -->
+        <!-- 修改 src 为你的 B站播放器地址，例如：
+             https://player.bilibili.com/player.html?bvid=BV11Bx7z6Epu&page=1&autoplay=1
+             可保留 isOutside=true/cid 等参数 -->
+        <iframe
+          id="myVedio"
+          src="https://player.bilibili.com/player.html?isOutside=true&aid=115450583188490&bvid=BV1BLyzBDE7y&cid=33447414941&p=1&autoplay=1"
+          width="100%"
+          style="aspect-ratio:16/9; height:auto;"
+          frameborder="0"
+          allow="autoplay; fullscreen"
+          allowfullscreen
+        ></iframe>
       </div>
     </div>
     <!-- JavaScript代码区域 -->
@@ -177,23 +186,12 @@
         playMasker.classList.add('isHidden'); // 隐藏播放按钮遮罩层
       });
       
-      // 点击播放按钮时播放视频并隐藏遮罩层（备用功能）
+      // 点击播放按钮时仅隐藏遮罩层（iframe 无法通过 JS 调 play）
       btnPlay.addEventListener("click", () => {
-        myVedio.play(); // 播放视频
-        playMasker.classList.add('isHidden') // 隐藏播放按钮遮罩层
+        playMasker.classList.add('isHidden');
       });
       
-      // 视频播放开始时隐藏播放按钮遮罩层
-      myVedio.addEventListener('play', ()=>{
-        playMasker.classList.add('isHidden') // 隐藏播放按钮遮罩层
-      });
-      
-      // 视频暂停时显示播放按钮遮罩层
-      myVedio.addEventListener('pause', ()=>{
-        playMasker.classList.remove('isHidden') // 显示播放按钮遮罩层
-      });
-      
-      // 由于设置了loop属性，视频会自动循环，不需要ended事件处理
+      // 使用 iframe 播放器，无 play/pause 事件可监听，这里不再绑定
       
       // 全屏功能
       fullscreenBtn.addEventListener('click', () => {
