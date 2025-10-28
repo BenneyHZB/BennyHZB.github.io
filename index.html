@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>首页</title>
+    <meta name="theme-color" content="#111111" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      body {
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        background: url("images/web_bg.png") no-repeat;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .menu {
+        position: absolute;
+        right: 2rem;
+        top: 0.15rem;
+        font-size: 0.2rem;
+        color: #fff;
+        display: flex;
+      }
+      .menu a {
+        margin: 0 0.1rem;
+        line-height: 0.3rem;
+        text-decoration: none;
+        color: #fff;
+      }
+      .menu a img {
+        width: 0.34rem;
+      }
+
+      button {
+        -webkit-appearance: none; /* 清除iOS默认样式 */
+        appearance: none;
+        border: none;
+        background: none;
+        cursor: pointer;
+      }
+      .video-part {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 4.5rem; /* 从3rem增加到4.5rem，调大视频区域 */
+        overflow: hidden;
+        z-index: 1;
+      }
+      .play-masker {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 10;
+      }
+      #btnPlay {
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 40px solid #fff;
+        transform: rotate(90deg);
+      }
+      .isHidden {
+        display: none;
+      }
+      .mr40{
+        margin-right: 40px !important;
+      }
+      .flex-container {
+        position: absolute;
+        left: 25%; /* 改为50%使容器完全居中 */
+        bottom: 10vh;
+        transform: translateX(-50%);
+      }
+      /* 全屏按钮样式 */
+      .fullscreen-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 20;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+      }
+      .fullscreen-btn:hover {
+        background: rgba(0, 0, 0, 0.9);
+        border-color: #fff;
+        transform: scale(1.05);
+      }
+      /* 全屏图标 - 使用简单的四个角样式 */
+      .fullscreen-btn::before {
+        content: '';
+        width: 18px;
+        height: 18px;
+        border: 2px solid #fff;
+        border-radius: 2px;
+        position: relative;
+      }
+      .fullscreen-btn::after {
+        content: '';
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border: 2px solid #fff;
+        border-radius: 1px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 顶部导航菜单区域 -->
+    <div class="menu">
+      <!-- 首页链接 -->
+      <a href="/">首页</a>
+      <!-- 招聘页面链接 - 修改此处的href来更改招聘页面地址 -->
+      <a href="baidu.com" class="mr40" target="_blank">招聘</a>
+      <!-- 微信二维码/公众号链接 - 修改此处的href来添加微信链接 -->
+      <a href=""><img src="images/wx.png" alt="微信" /></a>
+      <!-- B站链接 - 修改此处的href来添加B站链接 -->
+      <a href="https://space.bilibili.com/3546977128155332?spm_id_from=333.33.0.0"><img src="images/b.png" alt="B站" /></a>
+      <!-- 微博链接 - 修改此处的href来添加微博链接 -->
+      <a href=""><img src="images/wb.png" alt="微博" /></a>
+      <!-- 抖音链接 - 修改此处的href来添加抖音链接 -->
+      <a href=""><img src="images/dy.png" alt="抖音" /></a>
+    </div>
+    <!-- 视频播放区域 -->
+    <div class="flex-container">
+      <div class="video-part">
+        <!-- 视频播放遮罩层，点击后播放视频 -->
+        <div class="play-masker" id="playMasker">
+          <!-- 播放按钮（三角形图标） -->
+          <div id="btnPlay"></div>
+        </div>
+        <!-- 全屏按钮 -->
+        <div class="fullscreen-btn" id="fullscreenBtn" title="全屏播放"></div>
+        <!-- 视频元素 - 修改src属性来更改视频文件，添加autoplay和loop属性实现自动播放和循环 -->
+        <video id="myVedio" width="100%" muted autoplay loop>
+          <source src="images/1.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+    <!-- JavaScript代码区域 -->
+    <script>
+      // 获取页面元素
+      const playMasker = document.getElementById("playMasker"); // 播放遮罩层
+      const btnPlay = document.getElementById("btnPlay"); // 播放按钮
+      const myVedio = document.getElementById("myVedio"); // 视频元素
+      const fullscreenBtn = document.getElementById("fullscreenBtn"); // 全屏按钮
+      
+      // 页面加载完成后隐藏播放按钮遮罩层（因为视频会自动播放）
+      window.addEventListener('load', () => {
+        playMasker.classList.add('isHidden'); // 隐藏播放按钮遮罩层
+      });
+      
+      // 点击播放按钮时播放视频并隐藏遮罩层（备用功能）
+      btnPlay.addEventListener("click", () => {
+        myVedio.play(); // 播放视频
+        playMasker.classList.add('isHidden') // 隐藏播放按钮遮罩层
+      });
+      
+      // 视频播放开始时隐藏播放按钮遮罩层
+      myVedio.addEventListener('play', ()=>{
+        playMasker.classList.add('isHidden') // 隐藏播放按钮遮罩层
+      });
+      
+      // 视频暂停时显示播放按钮遮罩层
+      myVedio.addEventListener('pause', ()=>{
+        playMasker.classList.remove('isHidden') // 显示播放按钮遮罩层
+      });
+      
+      // 由于设置了loop属性，视频会自动循环，不需要ended事件处理
+      
+      // 全屏功能
+      fullscreenBtn.addEventListener('click', () => {
+        if (myVedio.requestFullscreen) {
+          myVedio.requestFullscreen();
+        } else if (myVedio.webkitRequestFullscreen) {
+          myVedio.webkitRequestFullscreen(); // Safari
+        } else if (myVedio.msRequestFullscreen) {
+          myVedio.msRequestFullscreen(); // IE/Edge
+        } else if (myVedio.mozRequestFullScreen) {
+          myVedio.mozRequestFullScreen(); // Firefox
+        }
+      });
+      
+      // 监听全屏状态变化，更新按钮样式
+      document.addEventListener('fullscreenchange', updateFullscreenButton);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+      document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+      document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+      
+      function updateFullscreenButton() {
+        if (document.fullscreenElement || 
+            document.webkitFullscreenElement || 
+            document.mozFullScreenElement || 
+            document.msFullscreenElement) {
+          // 在全屏模式中
+          fullscreenBtn.style.display = 'none'; // 全屏时隐藏全屏按钮
+        } else {
+          // 退出全屏模式
+          fullscreenBtn.style.display = 'flex'; // 显示全屏按钮
+        }
+      }
+    </script>
+  </body>
+</html>
